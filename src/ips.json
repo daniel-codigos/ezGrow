@@ -1,0 +1,9 @@
+{
+    "ips":{
+        "elegido":"192.168.1.57:8000",
+        "camara": "automap.mooo.com:5080",
+        "no-ip":"automap.mooo.com:8590",
+        "micasa":"192.168.1.57:8000",
+        "torre":"192.168.1.45:8000"
+    }
+} 
