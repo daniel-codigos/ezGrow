@@ -140,6 +140,19 @@ export default function SensorDashboard() {
           </>
         );
         break;
+        case 'sen_hume_tierra':
+          valueDisplay = (
+            <>
+              <Text style={[styles.sensorTitle, styles.iconLarge]}>🌡️ 💧</Text>
+              <Text style={styles.sensorLabel}>HS: {
+                //<Text style={styles.sensorValue}>{respuesta ? JSON.stringify(respuesta.sensores) : "No se encontraron datos"} °C</Text>
+                Object.entries(respuesta.sensores).map(([id, value]) => (
+                  <Text key={id} style={styles.sensorValue}>sensor {id} {"->"} valor: {value}</Text>
+                ))
+                }</Text>
+            </>
+          );
+          break;
       default:
         valueDisplay = <Text style={styles.sensorLabel}>Información desconocida</Text>;
     }

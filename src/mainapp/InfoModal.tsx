@@ -96,13 +96,28 @@ const InfoModal: React.FC<InfoModalProps> = ({ isVisible, onClose, data }) => {
     <Modal isVisible={isVisible} onBackdropPress={onClose}>
       <View style={styles.modalContainer}>
         <Text style={styles.modalTitle}>Información del Sensor</Text>
-        <Text style={styles.modalText}>{data.info === "sen_water_dist" ? 'distancia: ' + data.distancia :data.info === "sen_hume_tierra" ? "json sen:"+JSON.stringify(data.sensores, null, 2) : data.humedad ? "temperatura: "+data.temperatura +" ºC"+ " / Humedad:" +data.humedad : "temperatura: "+data.temperatura + " ºC"}</Text>
+        {
+          data.info === "sen_water_dist" ? 
+            <Text style={styles.modalText}>distancia: {data.distancia}</Text>
+          : 
+          data.info === "sen_hume_tierra" && data.sensores ? 
+            Object.entries(data.sensores).map(([id, value]) => (
+              <Text key={id} style={styles.modalText}>sensor {id} {"->"} valor: {value}</Text>
+            ))
+          : 
+          data.humedad ? 
+            <Text style={styles.modalText}>temperatura: {data.temperatura}ºC / Humedad: {data.humedad}</Text>
+          :
+            <Text style={styles.modalText}>temperatura: {data.temperatura} ºC</Text>
+        }
         {
           data.distancia && litrosBidon !== '' ?
-          <Text style={styles.modalText}>Litros: {litrosBidon}</Text>
+            <Text style={styles.modalText}>Litros: {litrosBidon}</Text>
           :
-          null
+            null
         }
+
+
         <Text style={styles.modalText}>Categoría: {data.space}</Text>
         <Text style={styles.modalText}>Tipo: {data.info}</Text>
         <Text style={styles.modalText}>Token: {data.token}</Text>
