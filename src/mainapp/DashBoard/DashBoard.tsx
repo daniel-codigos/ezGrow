@@ -66,6 +66,8 @@ export default function SensorDashboard() {
       });
 
       if (response.status === 200 && !response.data['Error']) {
+        console.log("+------------------------------------------+")
+        console.log(response.data)
         setSensors(response.data);
       }
       setLoading(false);
@@ -144,12 +146,21 @@ export default function SensorDashboard() {
           valueDisplay = (
             <>
               <Text style={[styles.sensorTitle, styles.iconLarge]}>🌡️ 💧</Text>
-              <Text style={styles.sensorLabel}>HS: {
+              <Text style={styles.sensorLabel}>Humedad Suelo: </Text>
+              <View style={{flexDirection:"column"}}>
+                {
                 //<Text style={styles.sensorValue}>{respuesta ? JSON.stringify(respuesta.sensores) : "No se encontraron datos"} °C</Text>
-                Object.entries(respuesta.sensores).map(([id, value]) => (
-                  <Text key={id} style={styles.sensorValue}>sensor {id} {"->"} valor: {value}</Text>
+                respuesta ? 
+                Object.entries(respuesta?.sensores).map(([id, value]) => (
+                  
+                    <Text key={id} style={styles.sensorValue}>sensor {id} {"->"} valor: {value}</Text>
+                  
                 ))
-                }</Text>
+                :
+                  <Text style={styles.sensorValue}>No hay datos</Text>
+                }
+                </View>
+                
             </>
           );
           break;

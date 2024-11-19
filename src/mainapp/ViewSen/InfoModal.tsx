@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import ip from "../ips.json";
+import ip from "../../ips.json";
 
 interface InfoModalProps {
   isVisible: boolean;

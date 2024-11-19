@@ -63,7 +63,10 @@ export default function TabOneScreen() {
           <Text style={{fontSize:25}}>📊</Text>
           <Text style={styles.txtEnchufes}>Datos Registrados</Text>
         </TouchableOpacity>
-
+        <TouchableOpacity onPress={(e) => handleButtonPress("NuevoCulti")} style={styles.button}>
+          <Text style={{fontSize:25}}>🆕🚪</Text>
+          <Text style={styles.txtEnchufes}>Nuevo Cultivo</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

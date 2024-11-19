@@ -1,17 +1,19 @@
-import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Text, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
-import ip from "../ips.json";
+import ip from "../../ips.json";
 import InfoModal from './InfoModal';
+import OpSensores from './OpSensores';
 
 export default function TabOneScreen() {
   const [sensorData, setSensorData] = useState([]);
   const [cargando, setCargando] = useState(false);
-  const [infoCargada, setInfoCargada] = useState(false);
+  const [showOPciones, setshowOPciones] = useState(false);
   const [selectedSensor, setSelectedSensor] = useState(null);
+  const [indexItem, setindexItem] = useState(null);
   const [sensors, setSensors] = useState([]);
   const [loadingSpaces, setLoadingSpaces] = useState(true);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
@@ -19,33 +21,7 @@ export default function TabOneScreen() {
   const route = useRoute();
   const { espacioName } = route.params;
 
-  const info_sensores = async (info) => {
-    try {
-      setCargando(true);
-      const token = await SecureStore.getItemAsync("token_ez");
-      const fin = { 'space': espacioName, 'reg': 8, 'info': info };
-      const response = await axios.post(`http://${ip.ips.elegido}/api/info_sensores/now_info_sensor`, { fin }, {
-        headers: {
-          'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
-        }
-      });
 
-      if (response.status === 200) {
-        if (response.data['Error']) {
-          setCargando(false);
-        } else {
-          if (response.data.space === espacioName) {
-            setSensorData(response.data);
-            setInfoCargada(true);
-            setCargando(false);
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error al verificar el token:', error);
-      setCargando(false);
-    }
-  };
 
   const delete_sensor = async () => {
     try {
@@ -72,7 +48,8 @@ export default function TabOneScreen() {
   };
 
   const cada_obj = (sensorId) => {
-    info_sensores(sensorId);
+    setindexItem(sensorId)
+    setshowOPciones(true)
   };
 
   const handleLongPress = (sensorId) => {
@@ -99,13 +76,17 @@ export default function TabOneScreen() {
     try {
       setCargando(true);
       const token = await SecureStore.getItemAsync("token_ez");
-      const fin = { 'space': espacioName }
-      const response = await axios.post(`http://${ip.ips.elegido}/api/info_sensores/take_info`, {fin},{
+      const fin = { 'space': espacioName };
+      const response = await axios.post(`http://${ip.ips.elegido}/api/info_sensores/take_info`, { fin }, {
         headers: {
           'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
         },
       });
+      console.log("asdasdasd")
+      await console.log(response.data)
       if (response.status === 200 || response.status === 201) {
+        console.log("asd-----------------------------------------------------------------")
+        console.log(response.data)
         setSensors(response.data);
         setLoadingSpaces(false);
       }
@@ -124,46 +105,47 @@ export default function TabOneScreen() {
     <TouchableOpacity
       key={index}
       onPress={() => cada_obj(item.info)}
-      onLongPress={() => handleLongPress(item.info)}
-      style={[styles.card, selectedSensor?.token === item.info.token ? styles.cardSelected : {}]}
+      style={styles.tableRow}
     >
-      <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.info.name}</Text>
-        <Text style={styles.cardText}>Espacio: {item.info.esp_cat}</Text>
-        <Text style={styles.cardText}>Topic: {item.info.topic}</Text>
-        <Text style={styles.cardText}>Token: {item.info.token}</Text>
-      </View>
+      <Text style={styles.tableCell}>{item.info.name}</Text>
+      <Text style={styles.tableCell}>{item.info.esp_cat}</Text>
+      <Text style={styles.tableCell}>{item.info.topic}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <TouchableWithoutFeedback onPress={handleOutsidePress}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Sensores Disponibles</Text>
-        {cargando ? (
-          <ActivityIndicator size="large" color="#007AFF" style={styles.loadingIndicator} />
-        ) : (
+    <View style={styles.container}>
+      <Text style={styles.title}>Sensores Disponibles</Text>
+      {cargando ? (
+        <ActivityIndicator size="large" color="#007AFF" style={styles.loadingIndicator} />
+      ) : (
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerCell}>Nombre</Text>
+            <Text style={styles.headerCell}>Espacio</Text>
+            <Text style={styles.headerCell}>Topic</Text>
+          </View>
           <FlatList
             data={sensors}
             renderItem={renderSensorItem}
             keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={styles.sensorList}
-            numColumns={2}
+            contentContainerStyle={styles.tableBody}
           />
-        )}
-        {showDeleteButton && (
-          <TouchableOpacity onPress={() => add_new_sen('del')} style={styles.deleteButton}>
-            <Icon2 name="delete" size={30} color="#ffffff" />
-          </TouchableOpacity>
-        )}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => add_new_sen('add')} style={styles.actionButton}>
-            <Icon2 name="add" size={30} color="#ffffff" />
-          </TouchableOpacity>
         </View>
-        <InfoModal isVisible={infoCargada} onClose={() => setInfoCargada(false)} data={sensorData} />
+      )}
+      {showDeleteButton && (
+        <TouchableOpacity onPress={() => add_new_sen('del')} style={styles.deleteButton}>
+          <Icon2 name="delete" size={30} color="#ffffff" />
+        </TouchableOpacity>
+      )}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => add_new_sen('add')} style={styles.actionButton}>
+          <Icon2 name="add" size={30} color="#ffffff" />
+        </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+
+      <OpSensores isVisible={showOPciones} onClose={() => setshowOPciones(false)} data={indexItem || {}} />
+    </View>
   );
 }
 
@@ -171,54 +153,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F4F9FD',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#003366',
     marginBottom: 20,
-    color: '#333',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  table: {
+    //flex: 0,
+    borderWidth: 3,
+    borderColor: '#B0BEC5',
+    borderRadius: 10,
+    overflow: 'hidden',
+    alignSelf: 'stretch',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#0066CC',
+    padding: 5,
+  },
+  headerCell: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     textAlign: 'center',
   },
-  sensorList: {
-    paddingBottom: 100,
+  tableBody: {
+    padding: 2,
   },
-  card: {
-    backgroundColor: '#ffffff',
-    padding: 20,
-    width:'90%',
-    borderRadius: 10,
-    marginBottom: 10,
-    marginHorizontal: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+  tableRow: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#D1D5DB',
+    alignItems: 'center',
+  },
+  tableCell: {
     flex: 1,
-    alignItems: 'center',
-  },
-  cardSelected: {
-    borderColor: '#FF0000',
-    borderWidth: 2,
-  },
-  cardContent: {
-    alignItems: 'center',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-  },
-  cardText: {
     fontSize: 16,
-    color: '#666',
-    marginBottom: 5,
+    color: 'black',
+    textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
     bottom: 20,
@@ -227,7 +211,7 @@ const styles = StyleSheet.create({
   actionButton: {
     backgroundColor: '#007AFF',
     padding: 16,
-    borderRadius: 50,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     width: 60,
@@ -235,12 +219,11 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     position: 'absolute',
-    bottom: 100,
-    left: '50%',
-    marginLeft: -30,
-    backgroundColor: '#FF0000',
+    bottom: 90,
+    alignSelf: 'center',
+    backgroundColor: '#FF3D00',
     padding: 16,
-    borderRadius: 50,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     width: 60,

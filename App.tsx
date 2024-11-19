@@ -23,7 +23,8 @@ import BidonApp from './src/mainapp/riego/bidon_app'
 import CamaraApp from './src/mainapp/fotos'
 import RutinasApp from './src/mainapp/eventos/rutinasMeross'
 import RegistrarSensor from './src/mainapp/rgstr_ofi'
-import VerSensores from './src/mainapp/view_sen'
+import VerSensores from './src/mainapp/ViewSen/view_sen'
+import OpSensores from './src/mainapp/ViewSen/OpSensores'
 import DatosMenu from './src/mainapp/infodb/menu'
 import DatosRegistrados from './src/mainapp/infodb/ShowInfo'
 import Carrito from './src/carrito/Carrito';
@@ -32,7 +33,7 @@ import AdminPanelButton from './src/clubsAdminPanel/AdminPanelButton';
 import AdminPanel from './src/clubsAdminPanel/AdminPanel';
 import RegisterScreen from './src/mainapp/RegisterNew';
 import { useAuth } from './src/context/AuthProvider';
-
+import NuevoCulti from './src/mainapp/newCulti/NuevoCultivo'
 //import AdminWelcome from './src/clubsAdminPanel/AdminWelcome';
 import ClubInfo from './src/clubsAdminPanel/ClubInfo';
 import ManageMenu from './src/clubsAdminPanel/ManageMenu';
@@ -141,6 +142,9 @@ export default function App() {
               {props => <DatosRegistrados {...props} setCartItems={setCartItems} />}
             </Stack.Screen>
             
+            <Stack.Screen name="NuevoCulti">
+              {props => <NuevoCulti {...props} setCartItems={setCartItems} />}
+            </Stack.Screen>
           </Stack.Navigator>
 
           {isLoginOk && (
