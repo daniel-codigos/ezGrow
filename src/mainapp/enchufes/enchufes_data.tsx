@@ -85,6 +85,7 @@ export default function NuevaPantalla(){
         }else{
           console.log("locoooooo aqui q vamoooosss merossData")
           console.log(response.data)
+          console.log(response.data.info.data)
           setMerossData(response.data)
           info_apa()
           //setStart(true)
@@ -412,6 +413,7 @@ export default function NuevaPantalla(){
                           // Guardar la lógica aquí
                           console.log(inputValue_editname)
                           console.log(nombre)
+                          console.log(merossData.info.status[regletaSelec])
                           setRegletaSelec(nombre)
                           setModalVisible_regletas(true)
                         }}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ScrollView } from 'react-native';
 import { AppRegistry } from 'react-native';
 import { expo as appName } from './app.json';
 import { NavigationContainer } from '@react-navigation/native';
@@ -69,161 +70,163 @@ export default function App() {
   return (
     <NavigationContainer>
       <NewAuthProvider>
-        <View style={{ flex: 1 }}>
-          <Stack.Navigator>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen 
-              name="Welcome" 
-              options={{
-                headerLeft: () => null,  // Esto quita el botón de retroceso
-                gestureEnabled: false,  // Esto desactiva los gestos de vuelta en iOS
-              }}
-            >
-              {(props) => <HomeScreen {...props} loginOk={loginOk} setAdmin={setIsAdmin} />} 
-            </Stack.Screen>
-            <Stack.Screen name="DashBoard">
-              {props => <DashBoard {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="Menu">
-              {props => <MenuScreen {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="EnchufesMenu">
-              {props => <EnchufesMenu {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="LuzMenu">
-              {props => <LuzMenu {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="LuzEdit">
-              {props => <LuzEdit {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="LuzPower">
-              {props => <LuzPower {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="VentiMenu">
-              {props => <VentiMenu {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="VentiConfig">
-              {props => <VentiConfig {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="VentiPower">
-              {props => <VentiPower {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="RiegoMenu">
-              {props => <RiegoMenu {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="RiegoConfig">
-              {props => <RiegoConfig {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="RiegoApp">
-              {props => <RiegoApp {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={{ flex: 1, width:'100%',height:'100%'}}>
+            <Stack.Navigator>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Register" component={RegisterScreen} />
+              <Stack.Screen 
+                name="Welcome" 
+                options={{
+                  headerLeft: () => null,  // Esto quita el botón de retroceso
+                  gestureEnabled: false,  // Esto desactiva los gestos de vuelta en iOS
+                }}
+              >
+                {(props) => <HomeScreen {...props} loginOk={loginOk} setAdmin={setIsAdmin} />} 
+              </Stack.Screen>
+              <Stack.Screen name="DashBoard">
+                {props => <DashBoard {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="Menu">
+                {props => <MenuScreen {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="EnchufesMenu">
+                {props => <EnchufesMenu {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="LuzMenu">
+                {props => <LuzMenu {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="LuzEdit">
+                {props => <LuzEdit {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="LuzPower">
+                {props => <LuzPower {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="VentiMenu">
+                {props => <VentiMenu {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="VentiConfig">
+                {props => <VentiConfig {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="VentiPower">
+                {props => <VentiPower {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="RiegoMenu">
+                {props => <RiegoMenu {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="RiegoConfig">
+                {props => <RiegoConfig {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="RiegoApp">
+                {props => <RiegoApp {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="BidonApp">
-              {props => <BidonApp {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
+              <Stack.Screen name="BidonApp">
+                {props => <BidonApp {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
 
-            <Stack.Screen name="CamaraApp">
-              {props => <CamaraApp {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="RutinasApp">
-              {props => <RutinasApp {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="RegistrarSensor">
-              {props => <RegistrarSensor {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="VerSensores">
-              {props => <VerSensores {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="DatosMenu">
-              {props => <DatosMenu {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            <Stack.Screen name="DatosRegistrados">
-              {props => <DatosRegistrados {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-            
-            <Stack.Screen name="NuevoCulti">
-              {props => <NuevoCulti {...props} setCartItems={setCartItems} />}
-            </Stack.Screen>
-          </Stack.Navigator>
+              <Stack.Screen name="CamaraApp">
+                {props => <CamaraApp {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="RutinasApp">
+                {props => <RutinasApp {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="RegistrarSensor">
+                {props => <RegistrarSensor {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="VerSensores">
+                {props => <VerSensores {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="DatosMenu">
+                {props => <DatosMenu {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              <Stack.Screen name="DatosRegistrados">
+                {props => <DatosRegistrados {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              
+              <Stack.Screen name="NuevoCulti">
+                {props => <NuevoCulti {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+            </Stack.Navigator>
 
-          {isLoginOk && (
-            <>
-              {
-                isAdmin && (
-                  <>
-                    <AdminPanelButton openAdmin={() => setIsAdminPanelVisi(true)} />
-                    <AdminPanel 
-                      visible={isAdminPanelVisi} 
-                      onClose={() => setIsAdminPanelVisi(false)} 
-                      otrosPaneles={{'clubInfo':setIsClubInfoVisible,'manage':setIsManageMenuVisible,'suscribedUsers':setIsSubscribedUsersVisible,'editAd':setIsEditAdVisible,'clubSet':setIsClubSettingsVisible}}
-                      clubInfoPrin={setClubInfoPrin}
-                    />
-                    {
-                      isAdminPanelVisi && (
-                        
-                        <>
-                        {
-                          isClubInfoVisible && (
-                            <>
-                              <ClubInfo 
-                                visible={isClubInfoVisible} 
-                                onClose={() => setIsClubInfoVisible(false)} 
-                                clubInfoPrin={clubInfoPrin}
-                              />
-                            </>
-                          )
-                        }
-                        {
-                          isManageMenuVisible && (
-                            <>
-                              <ManageMenu 
-                                visible={isManageMenuVisible} 
-                                onClose={() => setIsManageMenuVisible(false)} 
-                                clubInfoPrin={clubInfoPrin}
-                              />
-                            </>
-                          )
-                        }
-                        {
-                          isSubscribedUsersVisible && (
-                            <>
-                              <SubscribedUsers 
-                                visible={isSubscribedUsersVisible} 
-                                onClose={() => setIsSubscribedUsersVisible(false)} 
-                                clubInfoPrin={clubInfoPrin}
-                              />
-                            </>
-                          )
-                        }                        
-                        {
-                          isClubSettingsVisible && (
-                            <>
-                              <ClubSettings 
-                                visible={isClubSettingsVisible} 
-                                onClose={() => setIsClubSettingsVisible(false)} 
-                                clubInfoPrin={clubInfoPrin}
-                              />
-                            </>
-                          )
-                        }
-                        </>
-                      )
-                    }
+            {isLoginOk && (
+              <>
+                {
+                  isAdmin && (
+                    <>
+                      <AdminPanelButton openAdmin={() => setIsAdminPanelVisi(true)} />
+                      <AdminPanel 
+                        visible={isAdminPanelVisi} 
+                        onClose={() => setIsAdminPanelVisi(false)} 
+                        otrosPaneles={{'clubInfo':setIsClubInfoVisible,'manage':setIsManageMenuVisible,'suscribedUsers':setIsSubscribedUsersVisible,'editAd':setIsEditAdVisible,'clubSet':setIsClubSettingsVisible}}
+                        clubInfoPrin={setClubInfoPrin}
+                      />
+                      {
+                        isAdminPanelVisi && (
+                          
+                          <>
+                          {
+                            isClubInfoVisible && (
+                              <>
+                                <ClubInfo 
+                                  visible={isClubInfoVisible} 
+                                  onClose={() => setIsClubInfoVisible(false)} 
+                                  clubInfoPrin={clubInfoPrin}
+                                />
+                              </>
+                            )
+                          }
+                          {
+                            isManageMenuVisible && (
+                              <>
+                                <ManageMenu 
+                                  visible={isManageMenuVisible} 
+                                  onClose={() => setIsManageMenuVisible(false)} 
+                                  clubInfoPrin={clubInfoPrin}
+                                />
+                              </>
+                            )
+                          }
+                          {
+                            isSubscribedUsersVisible && (
+                              <>
+                                <SubscribedUsers 
+                                  visible={isSubscribedUsersVisible} 
+                                  onClose={() => setIsSubscribedUsersVisible(false)} 
+                                  clubInfoPrin={clubInfoPrin}
+                                />
+                              </>
+                            )
+                          }                        
+                          {
+                            isClubSettingsVisible && (
+                              <>
+                                <ClubSettings 
+                                  visible={isClubSettingsVisible} 
+                                  onClose={() => setIsClubSettingsVisible(false)} 
+                                  clubInfoPrin={clubInfoPrin}
+                                />
+                              </>
+                            )
+                          }
+                          </>
+                        )
+                      }
 
-                  </>
-                )
-              }
-              <FixedCartButton openCarrito={openCarrito} />
-              <Carrito 
-                visible={isCarritoVisible} 
-                onClose={closeCarrito} 
-                cartItems={cartItems} 
-                removeFromCart={removeFromCart} 
-              />
-            </>
-          )}
-        </View>
+                    </>
+                  )
+                }
+                <FixedCartButton openCarrito={openCarrito} />
+                <Carrito 
+                  visible={isCarritoVisible} 
+                  onClose={closeCarrito} 
+                  cartItems={cartItems} 
+                  removeFromCart={removeFromCart} 
+                />
+              </>
+            )}
+          </View>
+        </ScrollView>
       </NewAuthProvider>
     </NavigationContainer>
     

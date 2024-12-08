@@ -17,17 +17,17 @@ export default function TabOneScreen() {
     // Aquí puedes agregar el código para manejar la acción del botón
     console.log(btntxt);
     console.log('¡El botón ha sido presionado!');
-    navigation.navigate('pages/luz/'+btntxt, { espacioName: espacioName });
+    navigation.navigate(btntxt, { espacioName: espacioName });
   };
 
 
   return (
     <View style={styles.container}>
       <View style={styles.cont_prin}>
-        <TouchableOpacity onPress={(e) => handleButtonPress("luz_power")} style={styles.button}>
+        <TouchableOpacity onPress={(e) => handleButtonPress("LuzPower")} style={styles.button}>
           <Icon2 name="lightbulb" size={35} color="#ffffff" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={(e) => handleButtonPress("luz_config")} style={styles.button}>
+        <TouchableOpacity onPress={(e) => handleButtonPress("LuzEdit")} style={styles.button}>
           <Icon2 name="pen" size={30} color="#ffffff" />
         </TouchableOpacity>
 

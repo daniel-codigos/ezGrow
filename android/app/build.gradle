@@ -109,9 +109,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.cogollos.clubwar'
+    namespace 'com.cogollos.ezGrow'
     defaultConfig {
-        applicationId 'com.cogollos.clubwar'
+        applicationId 'com.cogollos.ezGrow'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

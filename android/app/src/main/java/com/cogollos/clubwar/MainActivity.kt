@@ -1,4 +1,4 @@
-package com.cogollos.clubwar
+package com.cogollos.ezGrow
 
 import android.os.Build
 import android.os.Bundle

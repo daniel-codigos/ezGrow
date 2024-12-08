@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "clubwar",
-    "slug": "clubwar",
+    "name": "ezGrow",
+    "slug": "ezGrow",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,7 +31,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.cogollos.clubwar"
+      "package": "com.cogollos.ezGrow"
     },
     "web": {
       "favicon": "./assets/favicon.png"

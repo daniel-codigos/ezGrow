@@ -7,8 +7,6 @@ import * as SecureStore from 'expo-secure-store';
 import ip from "../../ips.json";
 import moment from 'moment';
 
-const { width, height } = Dimensions.get('window'); // Obtener dimensiones de la pantalla
-
 const Graficas = () => {
   const [loadingCharts, setLoadingCharts] = useState(true);
   const [databaseInfo, setDatabaseInfo] = useState<any>([]);
@@ -71,7 +69,7 @@ const Graficas = () => {
       : [];
 
     const dataRelleno = data.info_relleno.length > 0
-      ? data.info_relleno.map((item: any) => Number(item.info_relleno.cantidadRellenar) || 0)
+      ? data.info_relleno.map((item: any) => Number(item.info_relleno.cantidadRellenar) || 0) // Asegúrate de que sean números
       : [];
 
     const labelsRiego = data.info_riego.length > 0
@@ -79,7 +77,7 @@ const Graficas = () => {
       : [];
 
     const dataRiego = data.info_riego.length > 0
-      ? data.info_riego.map((item: any) => Number(item.info_riego.cantidadRiego / 1000) || 0)
+      ? data.info_riego.map((item: any) => Number(item.info_riego.cantidadRiego / 1000) || 0) // Asegúrate de que sean números
       : [];
 
     const ultimaSemanaRelleno = labelsRelleno.slice(-7);
@@ -109,8 +107,8 @@ const Graficas = () => {
             labels: weeksRelleno[currentWeekRelleno].labels,
             datasets: [{ data: weeksRelleno[currentWeekRelleno].data.filter(value => typeof value === 'number'), color: () => `rgba(255, 0, 0, 0.6)` }],
           }}
-          width={width * 0.9} // Responsive
-          height={height * 0.3} // Responsive
+          width={Dimensions.get('window').width - 40}
+          height={220}
           yAxisSuffix=" L"
           chartConfig={chartConfig}
           bezier
@@ -133,8 +131,8 @@ const Graficas = () => {
             labels: weeksRiego[currentWeekRiego].labels,
             datasets: [{ data: weeksRiego[currentWeekRiego].data.filter(value => typeof value === 'number'), color: () => `rgba(0, 0, 255, 0.6)` }],
           }}
-          width={width * 0.9} // Responsive
-          height={height * 0.3} // Responsive
+          width={Dimensions.get('window').width - 40}
+          height={220}
           yAxisSuffix=" L"
           chartConfig={chartConfig}
           bezier
@@ -150,27 +148,35 @@ const Graficas = () => {
         <ActivityIndicator size="large" color="#007AFF" style={styles.loadingIndicator} />
       ) : (
         <>
-          <View style={styles.infoContainer}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
             {databaseInfo.info_relleno && databaseInfo.info_relleno.length > 0 ? (
-              <View style={styles.infoCard}>
-                <Text style={styles.infoTitle}>Info Último Relleno</Text>
-                <Text style={styles.infoText}>Fecha: {databaseInfo.info_relleno[databaseInfo.info_relleno.length - 1].timestamp.split("T")[0]}</Text>
-                <Text style={styles.infoText}>Cantidad Relleno: {databaseInfo.info_relleno[databaseInfo.info_relleno.length - 1].info_relleno.cantidadRellenar} L</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10, flexWrap: 'wrap' }}>
+                <View style={{ borderWidth: 4, borderRadius: 15, padding: 10, borderColor: '#007AFF' }}>
+                  <Text style={{ fontSize: 17, fontWeight: "bold" }}>Info Último Relleno</Text>
+                  <Text style={{ fontSize: 15 }}>Fecha: {databaseInfo.info_relleno[databaseInfo.info_relleno.length - 1].timestamp.split("T")[0]}</Text>
+                  <Text style={{ fontSize: 15 }}>Cantidad Relleno: {databaseInfo.info_relleno[databaseInfo.info_relleno.length - 1].info_relleno.cantidadRellenar} L</Text>
+                </View>
               </View>
             ) : (
-              <Text style={styles.noDataText}>No hay información aún de relleno</Text>
+              <Text>No hay información aún de relleno</Text>
             )}
 
             {databaseInfo.info_riego && databaseInfo.info_riego.length > 0 ? (
-              <View style={styles.infoCard}>
-                <Text style={styles.infoTitle}>Info Último Riego</Text>
-                <Text style={styles.infoText}>Fecha: {databaseInfo.info_riego[databaseInfo.info_riego.length - 1].timestamp.split("T")[0]}</Text>
-                <Text style={styles.infoText}>Cantidad Riego: {databaseInfo.info_riego[databaseInfo.info_riego.length - 1].info_riego.cantidadRiego / 1000} L</Text>
+              <View style={{ borderWidth: 4, borderRadius: 15, padding: 10, marginLeft: 5, borderColor: '#007AFF' }}>
+                <Text style={{ fontSize: 17, fontWeight: "bold" }}>Info Último Riego</Text>
+                <Text style={{ fontSize: 15 }}>Fecha: {databaseInfo.info_riego[databaseInfo.info_riego.length - 1].timestamp.split("T")[0]}</Text>
+                <Text style={{ fontSize: 15 }}>Cantidad Riego: {databaseInfo.info_riego[databaseInfo.info_riego.length - 1].info_riego.cantidadRiego / 1000} L</Text>
+                <Text style={{ fontSize: 15 }}>Fertilizante: {databaseInfo.info_riego[databaseInfo.info_riego.length - 1].info_riego.fertis}</Text>
+                <Text style={{ fontSize: 15 }}>Temperatura: {databaseInfo.info_riego[databaseInfo.info_riego.length - 1].info_riego.tempWater}</Text>
               </View>
             ) : (
-              <Text style={styles.noDataText}>No hay información aún de riego</Text>
+              <Text>No hay información aún de riego</Text>
             )}
           </View>
+
+          {weeksRelleno.length === 0 && weeksRiego.length === 0 && (
+            <Text style={styles.noDataText}>No hay datos de gráficos disponibles</Text>
+          )}
 
           {renderRellenoChart()}
           {renderRiegoChart()}
@@ -192,10 +198,10 @@ const chartConfig = {
 
 const styles = StyleSheet.create({
   chartContainer: {
-    marginTop: height * 0.02,
+    marginTop: 20,
     backgroundColor: '#ffffff',
-    borderRadius: width * 0.02,
-    padding: width * 0.05,
+    borderRadius: 10,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -203,49 +209,23 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   chartTitle: {
-    fontSize: width * 0.05,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#007AFF',
     textAlign: 'center',
-    marginBottom: height * 0.01,
+    marginBottom: 10,
   },
   chartStyle: {
-    borderRadius: width * 0.02,
+    borderRadius: 10,
   },
   loadingIndicator: {
-    marginTop: height * 0.02,
+    marginTop: 20,
   },
   noDataText: {
     textAlign: 'center',
-    fontSize: width * 0.045,
+    fontSize: 18,
     color: '#999',
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-    marginBottom: height * 0.02,
-  },
-  infoCard: {
-    borderWidth: 2,
-    borderRadius: width * 0.02,
-    padding: width * 0.04,
-    borderColor: '#007AFF',
-    width: width * 0.4,
-    marginBottom: height * 0.02,
-  },
-  infoTitle: {
-    fontSize: width * 0.045,
-    fontWeight: 'bold',
-    marginBottom: height * 0.01,
-    textAlign: 'center',
-  },
-  infoText: {
-    fontSize: width * 0.04,
-    marginBottom: height * 0.005,
   },
 });
 
 export default Graficas;
-
