@@ -191,6 +191,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
   },
+  loadingIndicator: {
+    marginVertical: 20,
+  },
 });
 
 export default OpSensores;

@@ -109,8 +109,8 @@ const Graficas = () => {
             labels: weeksRelleno[currentWeekRelleno].labels,
             datasets: [{ data: weeksRelleno[currentWeekRelleno].data.filter(value => typeof value === 'number'), color: () => `rgba(255, 0, 0, 0.6)` }],
           }}
-          width={width * 0.9} // Responsive
-          height={height * 0.3} // Responsive
+          width={width * 0.85} // Responsive
+          height={height * 0.35} // Responsive
           yAxisSuffix=" L"
           chartConfig={chartConfig}
           bezier
@@ -133,8 +133,8 @@ const Graficas = () => {
             labels: weeksRiego[currentWeekRiego].labels,
             datasets: [{ data: weeksRiego[currentWeekRiego].data.filter(value => typeof value === 'number'), color: () => `rgba(0, 0, 255, 0.6)` }],
           }}
-          width={width * 0.9} // Responsive
-          height={height * 0.3} // Responsive
+          width={width * 0.85} // Responsive
+          height={height * 0.35} // Responsive
           yAxisSuffix=" L"
           chartConfig={chartConfig}
           bezier
@@ -211,6 +211,7 @@ const styles = StyleSheet.create({
   },
   chartStyle: {
     borderRadius: width * 0.02,
+    //backgroundColor:"#dcdcdc"
   },
   loadingIndicator: {
     marginTop: height * 0.02,
@@ -221,6 +222,7 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   infoContainer: {
+    marginTop:20,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-start',
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
   },
   infoCard: {
+    backgroundColor:"#dcdcdc",
     borderWidth: 2,
     borderRadius: width * 0.02,
     padding: width * 0.04,

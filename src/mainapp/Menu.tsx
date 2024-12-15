@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#212121',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     alignContent: "flex-start",
   },
   title: {
+    color:'#fff',
     fontSize: width * 0.06,
     fontWeight: 'bold',
     marginVertical: height * 0.02,

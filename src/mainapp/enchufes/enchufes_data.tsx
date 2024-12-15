@@ -8,11 +8,10 @@ import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import Modal from 'react-native-modal';
 import { useRoute } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Reemplaza 'FontAwesome' con el conjunto de iconos que desees usar
-import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import ip from "../../ips.json"
-import Rutinas from './rutinas'; 
 import Regletas from "./regletas";
+import EnchufesMenu from './EnchufesMenu';
 
 export default function NuevaPantalla(){
   const [merossData,setMerossData] = useState({})
@@ -36,11 +35,12 @@ export default function NuevaPantalla(){
   const [escenasModalVisible, setEscenasModalVisible] = useState(false);
 
   const hideModal = () => {
-    setRegletaSelec('')
-    setChannel_editname({})
+    //setRegletaSelec('')
+    //setChannel_editname({})
     setModalVisible_editname(false);
     setModalVisible_aparato(false);
-    setModalVisible_regletas(false)
+    //setModalVisible_regletas(false)
+    //setModalVisible(false)
   };
 
   const route = useRoute();
@@ -402,29 +402,21 @@ export default function NuevaPantalla(){
     <View style={styles.container}>
       {merossData !== "NoUser" && start ? (
         <View>
-          <Text style={{textAlign: 'right'}}>Bienvenido {merossData.info.user_meross_info?.email.split('@')[0]}</Text>
+          <Text style={{textAlign: 'right',fontWeight:'bold',fontSize:15}}>Bienvenido {merossData.info.user_meross_info?.email.split('@')[0]}</Text>
           {/*aqui hacer un map a status y sacar en texto todos los enchufes con su nombre y status*/}
           <View>
               {Object.entries(merossData.info.status).map(([nombre, enchufes], index) => (
-                <View style={styles.regle_cont_prin}>
-                  <View style={styles.cont_titulo}>
-                    <TouchableOpacity
-                        onPress={() => {
-                          // Guardar la lógica aquí
-                          console.log(inputValue_editname)
-                          console.log(nombre)
-                          console.log(merossData.info.status[regletaSelec])
-                          setRegletaSelec(nombre)
-                          setModalVisible_regletas(true)
-                        }}
-                        style={styles.modalButton}
-                      >
-                        <Text style={[styles.ench_titulo]}>{nombre}</Text>
-                    </TouchableOpacity>
-                    {/*recoje el nombre seleccionado para el nuevo modal*/}
-                  </View>                 
-                  
-                </View>
+                  <EnchufesMenu
+                  key={index}
+                  nombre={nombre}
+                  onPress={() => {
+                    console.log(inputValue_editname);
+                    console.log(nombre);
+                    console.log(merossData.info.status[nombre]);
+                    setRegletaSelec(nombre);
+                    setModalVisible_regletas(true);
+                  }}
+                />
               ))}
 
               <View>
@@ -441,6 +433,8 @@ export default function NuevaPantalla(){
                 espacioName={espacioName}
               />
               </View>
+
+
 
               <View>
                 <Modal isVisible={isModalVisible}>
@@ -465,7 +459,7 @@ export default function NuevaPantalla(){
                                     apaEncon &&
                                     <Text style={{color:"white",fontSize:26,backgroundColor:'red',borderRadius:5, marginTop:10}} onPress={(e) => deleteApa(channelClick.regleta,apaEncon.info.aparato,channelClick.numChannel)}>Borrar aparato</Text>
                                   }
-                                  <Button style={{marginTop:20}} title="Cerrar" onPress={(e) => toggleMenu(true)} />
+                                  <Button style={{marginTop:20}} title="Cerrar" onPress={(e) => setModalVisible(false)} />
                   </View>
                 </Modal>
               </View>

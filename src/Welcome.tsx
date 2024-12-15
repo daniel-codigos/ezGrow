@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, TextInput, Text, View  } from 'react-native';
+import { StyleSheet, TouchableOpacity, TextInput, Text, View , Image } from 'react-native';
 import React, { useState, useEffect } from "react";
 import Modal from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
@@ -93,7 +93,11 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <View style={styles.cont_prin}>
         <View style={styles.text_ini}>
-          <Text style={styles.textos_def}>Bienvenido. Espacios disponibles:</Text>
+        <Image 
+          source={require('./assets/images/ezgrow_logo.jpg')} // Reemplaza con la ruta de tu imagen
+          style={styles.image}
+        />
+          {/*<Text style={styles.textos_def}>Bienvenido!! Espacios disponibles:</Text>*/}
         </View>
         <View style={styles.cont_espacios}>
           {loadingSpaces === true ? (
@@ -167,6 +171,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width:"100%",
     height:"100%",
+    backgroundColor:"#212121",
   },
   cont_prin:{
     //marginHorizontal: 20,
@@ -216,6 +221,12 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+  image: {
+    width: 350, // Ancho de la imagen
+    height: 100, // Alto de la imagen
+    marginBottom: 15, // Espacio entre la imagen y el texto
+    borderRadius: 50, // Para redondear los bordes de la imagen
+  },
   button: {
     backgroundColor: '#007AFF', // Color de fondo del botón (puedes cambiarlo)
     padding: 15,
@@ -251,7 +262,8 @@ const styles = StyleSheet.create({
     textAlign:"center",
   },
   textos_def:{
-    color: '#000000', // Color del texto del botón (puedes cambiarlo)
+    marginTop:10,
+    color: '#fff', // Color del texto del botón (puedes cambiarlo)
     fontSize: 18,
     fontWeight: 'bold',
     textAlign:"center",

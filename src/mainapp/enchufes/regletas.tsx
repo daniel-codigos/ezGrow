@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Modal, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/FontAwesome5';
+import Rutinas from "./rutinas"; 
 
 const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_enchufe, menu_enchufe, setRutinasModalVisible, setEscenasModalVisible, rutinasModalVisible, espacioName }) => {
   const [cargando, setCargando] = useState(false);
@@ -75,6 +76,13 @@ const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_en
               >
                 <Text style={styles.buttonText}>Rutinas</Text>
               </TouchableOpacity>
+              {rutinasModalVisible &&
+                <Rutinas
+                  visible={rutinasModalVisible}
+                  onClose={() => setRutinasModalVisible(false)}
+                  info={{ 'merossData': merossData, "master": regletaSelec, "space": espacioName, "mod": null }}
+              />}
+
               <TouchableOpacity
                 style={styles.escenasButton}
                 onPress={() => setEscenasModalVisible(true)}
@@ -92,6 +100,7 @@ const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_en
         </View>
       </View>
     </Modal>
+
   );
 };
 
