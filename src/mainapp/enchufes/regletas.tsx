@@ -7,6 +7,13 @@ import Rutinas from "./rutinas";
 const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_enchufe, menu_enchufe, setRutinasModalVisible, setEscenasModalVisible, rutinasModalVisible, espacioName }) => {
   const [cargando, setCargando] = useState(false);
 
+  const cargar = async (enchufe,innerIndex) => {
+    setCargando(true);
+    console.log("se puse cargando weyyyy")
+    await menu_accion_enchufe(regletaSelec, enchufe.name, merossData, innerIndex, enchufe.status);
+    setCargando(false);
+  };
+
   return (
     <Modal
       transparent={true}
@@ -28,12 +35,10 @@ const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_en
                       <TouchableOpacity
                         style={[
                           styles.enchufeButton,
-                          { backgroundColor: enchufe.status ? '#68c4af' : '#ff8b94' }
+                          { backgroundColor: cargando ? 'black' : enchufe.status ? '#68c4af' : '#ff8b94' }
                         ]}
-                        onPress={async () => {
-                          setCargando(true);
-                          await menu_accion_enchufe(regletaSelec, enchufe.name, merossData, innerIndex, enchufe.status);
-                          setCargando(false);
+                        onPress={() => {
+                          cargar(enchufe,innerIndex)
                         }}
                       >
                         <Icon name={innerIndex === 5 ? "usb" : "plug"} size={28} color="#FFFFFF" />
@@ -43,7 +48,11 @@ const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_en
                         <View key={innerIndex} style={styles.nameContainer}>
                           <Text style={styles.nameText}>{enchufe.name}</Text>
                         </View>
-
+                        {cargando && (  
+                          <View style={styles.loading}>
+                            <ActivityIndicator size="small" color="#007AFF" />
+                          </View>
+                        )}
                       <TouchableOpacity
                         style={styles.editButton}
                         onPress={() => menu_enchufe(regletaSelec, enchufe.name, innerIndex, enchufe.status)}
@@ -62,11 +71,7 @@ const Regletas = ({ isVisible, onClose, merossData, regletaSelec, menu_accion_en
 
             </View>
 
-            {cargando && (
-              <View style={styles.loading}>
-                <ActivityIndicator size="large" color="#007AFF" />
-              </View>
-            )}
+
 
             {/* Buttons */}
             <View style={styles.footerButtons}>
@@ -214,10 +219,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   loading: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
+    //position: 'absolute',
+    //top: '50%',
+    //left: '50%',
+    //transform: [{ translateX: -25 }, { translateY: -25 }],
+    marginBottom:10
   },
 });
 

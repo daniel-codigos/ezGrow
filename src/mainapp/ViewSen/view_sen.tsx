@@ -1,76 +1,21 @@
-import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Text, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Text, FlatList, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import ip from "../../ips.json";
-import InfoModal from './InfoModal';
 import OpSensores from './OpSensores';
 
 export default function TabOneScreen() {
-  const [sensorData, setSensorData] = useState([]);
+  const [sensors, setSensors] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [showOPciones, setshowOPciones] = useState(false);
-  const [selectedSensor, setSelectedSensor] = useState(null);
   const [indexItem, setindexItem] = useState(null);
-  const [sensors, setSensors] = useState([]);
-  const [loadingSpaces, setLoadingSpaces] = useState(true);
-  const [showDeleteButton, setShowDeleteButton] = useState(false);
+  const [selectedSensor, setSelectedSensor] = useState(null);
   const navigation = useNavigation();
   const route = useRoute();
   const { espacioName } = route.params;
-
-
-
-  const delete_sensor = async () => {
-    try {
-      setCargando(true);
-      const token = await SecureStore.getItemAsync("token_ez");
-      const fin = { 'space': espacioName, 'info': selectedSensor };
-      const response = await axios.post(`http://${ip.ips.elegido}/api/info_sensores/delete_sen`, { fin }, {
-        headers: {
-          'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
-        },
-      });
-      if (response.status === 200 || response.status === 201) {
-        const data_info_del = response.data.info;
-        const filteredSensors = sensors.filter(sensor => sensor.info.token !== data_info_del.token);
-        setSensors(filteredSensors);
-        setSelectedSensor(null);
-        setShowDeleteButton(false);
-      }
-      setCargando(false);
-    } catch (error) {
-      console.error('Error al verificar el token:', error);
-      setCargando(false);
-    }
-  };
-
-  const cada_obj = (sensorId) => {
-    setindexItem(sensorId)
-    setshowOPciones(true)
-  };
-
-  const handleLongPress = (sensorId) => {
-    setSelectedSensor(sensorId);
-    setShowDeleteButton(true);
-  };
-
-  const handleOutsidePress = () => {
-    if (selectedSensor) {
-      setSelectedSensor(null);
-      setShowDeleteButton(false);
-    }
-  };
-
-  const add_new_sen = (qhace) => {
-    if (qhace === "add") {
-      navigation.navigate('pages/rgstr_ofi', { espacioName: espacioName });
-    } else {
-      delete_sensor();
-    }
-  };
 
   const take_sensor = async () => {
     try {
@@ -82,14 +27,7 @@ export default function TabOneScreen() {
           'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
         },
       });
-      console.log("asdasdasd")
-      await console.log(response.data)
-      if (response.status === 200 || response.status === 201) {
-        console.log("asd-----------------------------------------------------------------")
-        console.log(response.data)
-        setSensors(response.data);
-        setLoadingSpaces(false);
-      }
+      setSensors(response.data);
       setCargando(false);
     } catch (error) {
       console.error('Error al verificar el token:', error);
@@ -101,15 +39,27 @@ export default function TabOneScreen() {
     take_sensor();
   }, []);
 
-  const renderSensorItem = ({ item, index }) => (
+  const cada_obj = (sensorId) => {
+    setindexItem(sensorId);
+    setshowOPciones(true);
+  };
+
+  const renderSensorCard = ({ item }) => (
     <TouchableOpacity
-      key={index}
+      style={styles.cardContainer}
       onPress={() => cada_obj(item.info)}
-      style={styles.tableRow}
     >
-      <Text style={styles.tableCell}>{item.info.name}</Text>
-      <Text style={styles.tableCell}>{item.info.esp_cat}</Text>
-      <Text style={styles.tableCell}>{item.info.topic}</Text>
+      <View style={styles.cardImageContainer}>
+        <Image
+          source={require('../../assets/sensors.png')} // Imagen local
+          style={styles.cardImage}
+        />
+      </View>
+      <View style={styles.cardTextContainer}>
+        <Text style={styles.cardTitle}>{item.info.name}</Text>
+        <Text style={styles.cardSubtitle}>Espacio: {item.info.esp_cat}</Text>
+        <Text style={styles.cardTopic}>Topic: {item.info.topic}</Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -119,31 +69,18 @@ export default function TabOneScreen() {
       {cargando ? (
         <ActivityIndicator size="large" color="#007AFF" style={styles.loadingIndicator} />
       ) : (
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.headerCell}>Nombre</Text>
-            <Text style={styles.headerCell}>Espacio</Text>
-            <Text style={styles.headerCell}>Topic</Text>
-          </View>
-          <FlatList
-            data={sensors}
-            renderItem={renderSensorItem}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={styles.tableBody}
-          />
-        </View>
-      )}
-      {showDeleteButton && (
-        <TouchableOpacity onPress={() => add_new_sen('del')} style={styles.deleteButton}>
-          <Icon2 name="delete" size={30} color="#ffffff" />
-        </TouchableOpacity>
+        <FlatList
+          data={sensors}
+          renderItem={renderSensorCard}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.flatListContainer}
+        />
       )}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => add_new_sen('add')} style={styles.actionButton}>
+        <TouchableOpacity onPress={() => navigation.navigate('pages/rgstr_ofi', { espacioName })} style={styles.addButton}>
           <Icon2 name="add" size={30} color="#ffffff" />
         </TouchableOpacity>
       </View>
-
       <OpSensores isVisible={showOPciones} onClose={() => setshowOPciones(false)} data={indexItem || {}} />
     </View>
   );
@@ -152,82 +89,78 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#F4F9FD',
+    backgroundColor: '#212121',
+    justifyContent:"center",
+    alignContent:"center",
+    //alignItems:"center",
+  },
+  flatListContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 30,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#003366',
-    marginBottom: 20,
+    color: 'white',
+    marginVertical: 20,
     textAlign: 'center',
     textTransform: 'uppercase',
   },
-  table: {
-    //flex: 0,
-    borderWidth: 3,
-    borderColor: '#B0BEC5',
-    borderRadius: 10,
-    overflow: 'hidden',
-    alignSelf: 'stretch',
-  },
-  tableHeader: {
+  cardContainer: {
     flexDirection: 'row',
-    backgroundColor: '#0066CC',
-    padding: 5,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 15,
+    width:"65%",
+    marginLeft:"18%",
+    marginBottom: 10,
+    elevation: 4, // Sombra en Android
+    shadowColor: '#000', // Sombra en iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
-  headerCell: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  tableBody: {
-    padding: 2,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D1D5DB',
+  cardImageContainer: {
+    justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 15,
   },
-  tableCell: {
+  cardImage: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  cardTextContainer: {
     flex: 1,
-    fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: '#555555',
+    marginVertical: 4,
+  },
+  cardTopic: {
+    fontSize: 12,
+    color: '#777777',
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'absolute',
-    bottom: 20,
-    width: '100%',
+    bottom: 10,
+    right: 10,
   },
-  actionButton: {
+  addButton: {
     backgroundColor: '#007AFF',
-    padding: 16,
+    width: 60,
+    height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 60,
-    height: 60,
-  },
-  deleteButton: {
-    position: 'absolute',
-    bottom: 90,
-    alignSelf: 'center',
-    backgroundColor: '#FF3D00',
-    padding: 16,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 60,
-    height: 60,
+    elevation: 4,
   },
   loadingIndicator: {
     marginTop: 20,

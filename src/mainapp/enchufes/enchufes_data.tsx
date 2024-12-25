@@ -402,7 +402,7 @@ export default function NuevaPantalla(){
     <View style={styles.container}>
       {merossData !== "NoUser" && start ? (
         <View>
-          <Text style={{textAlign: 'right',fontWeight:'bold',fontSize:15}}>Bienvenido {merossData.info.user_meross_info?.email.split('@')[0]}</Text>
+          <Text style={{textAlign: 'right',fontWeight:'bold',fontSize:15, color:"white"}}>Bienvenido {merossData.info.user_meross_info?.email.split('@')[0]}</Text>
           {/*aqui hacer un map a status y sacar en texto todos los enchufes con su nombre y status*/}
           <View>
               {Object.entries(merossData.info.status).map(([nombre, enchufes], index) => (
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     justifyContent: 'flex-start',
-    backgroundColor:"white",
+    backgroundColor:"#212121",
   },
 
   title: {

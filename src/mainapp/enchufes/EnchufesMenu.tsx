@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#2C2C2C',
+    backgroundColor: '#dcdcdc',
     borderRadius: 15,
     elevation: 10, // Shadow for Android
     shadowColor: '#000', // Shadow for iOS
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   gradientContainer: {
     flex: 3,
-    backgroundColor: '#232323',
+    backgroundColor: '#007AFF',
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     paddingVertical: 20,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ench_titulo: {
-    color: '#FFF',
+    color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',

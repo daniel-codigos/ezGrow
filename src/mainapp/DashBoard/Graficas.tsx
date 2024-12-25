@@ -40,6 +40,8 @@ const Graficas = () => {
       });
 
       if (response.status === 200 && !response.data['Error']) {
+        console.log(response.data.info_relleno)
+        console.log("+++-+-+--+-+-+-+--+-+-+-+-+-+--+--+")
         setDatabaseInfo(response.data);
         if (response.data.info_relleno.length > 0) {
           setAvailableMonths([
