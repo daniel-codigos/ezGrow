@@ -21,6 +21,7 @@ import RiegoMenu from './src/mainapp/riego/menu'
 import RiegoConfig from './src/mainapp/riego/riego_config'
 import RiegoApp from './src/mainapp/riego/riego_app'
 import BidonApp from './src/mainapp/riego/bidon_app'
+import BidonConfig from './src/mainapp/riego/BidonConfig'
 import CamaraApp from './src/mainapp/fotos'
 import RutinasApp from './src/mainapp/eventos/rutinasMeross'
 import RegistrarSensor from './src/mainapp/rgstr_ofi'
@@ -124,7 +125,10 @@ export default function App() {
               <Stack.Screen name="BidonApp">
                 {props => <BidonApp {...props} setCartItems={setCartItems} />}
               </Stack.Screen>
-
+              <Stack.Screen name="BidonConfig">
+                {props => <BidonConfig {...props} setCartItems={setCartItems} />}
+              </Stack.Screen>
+              
               <Stack.Screen name="CamaraApp">
                 {props => <CamaraApp {...props} setCartItems={setCartItems} />}
               </Stack.Screen>

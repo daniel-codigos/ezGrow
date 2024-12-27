@@ -34,6 +34,9 @@ export default function TabOneScreen() {
         <TouchableOpacity onPress={(e) => handleButtonPress("BidonApp")} style={styles.button}>
           <Icon4 name="water-pump" size={30} color="#ffffff" />
         </TouchableOpacity>
+        <TouchableOpacity onPress={(e) => handleButtonPress("BidonConfig")} style={styles.button}>
+        <Icon2 name="pen" size={30} color="#ffffff" />
+        </TouchableOpacity>
 
       </View>
     </View>

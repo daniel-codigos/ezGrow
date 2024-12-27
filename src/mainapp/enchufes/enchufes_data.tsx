@@ -59,7 +59,7 @@ export default function NuevaPantalla(){
     { label: "Calentador agua", value: "Calentador agua" },
     { label: "Oxigenador", value: "Oxigenador" },
     { label: "Válvula desagüe", value: "Valvula desague" },
-    { label: "Válvula", value: "Valvula" },
+    { label: "Válvula Relleno", value: "Valvula Relleno" },
     { label: "Sensores", value: "Sensores" }
   ];
 

@@ -165,6 +165,7 @@ export default function SensorDashboard() {
             <>
             <View key={index} style={styles.sensorContainer}>
               <Text style={styles.sensorTitle}>{displayName}</Text>
+              <Text style={styles.sensorname}>{sensor.data.name} </Text>
               <Text style={styles.sensorLabel}>
                 Cantidad: <Text style={styles.sensorValue}>{liters.toFixed(2)} L</Text>
               </Text>
@@ -176,6 +177,7 @@ export default function SensorDashboard() {
               <>
               <View key={index} style={styles.sensorContainer}>
                 <Text style={[styles.sensorTitle, styles.iconLarge]}>🌡️ 💧</Text>
+                <Text style={styles.sensorname}>{sensor.data.name} </Text>
                 <Text style={styles.sensorLabel}>
                   Temperatura: <Text style={styles.sensorValue}>{sensor.data ? sensor.data.temperatura : "No se encontraron datos"} °C</Text>
                 </Text>
@@ -186,8 +188,8 @@ export default function SensorDashboard() {
             return (
               <>
               <View key={index} style={styles.sensorContainer}>
-                <Text style={[styles.sensorTitle, styles.iconLarge]}>🌡️ 💧</Text>
-                <Text style={styles.sensorLabel}>Humedad Suelo: </Text>
+                <Text style={[styles.sensorTitle, styles.iconLarge]}>%💧Suelo</Text>
+                <Text style={styles.sensorname}>{sensor.data.name} </Text>
                 <View style={{ flexDirection: "column" }}>
                   {sensor.data.sensores ? (
                     Object.entries(sensor.data.sensores).map(([id, value]) => (
@@ -304,6 +306,12 @@ const styles = StyleSheet.create({
   sensorLabel: {
     fontSize: 14,
     color: '#333',
+  },
+  sensorname:{
+    fontSize: 14,
+    fontWeight:"bold",
+    color: '#333',
+    borderBottomWidth:1,
   },
   sensorValue: {
     fontWeight: 'bold',
