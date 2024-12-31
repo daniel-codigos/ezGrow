@@ -9,10 +9,10 @@ import { sendNotification, requestPermissions } from "../usePushNotifications";
 const NuevaPantalla = () => {
   const [hayLuz, setHayLuz] = useState(null);
   const [aparatos, setAparatos] = useState([
-    { 'name': 'bomba de riego' },
-    { 'name': 'calentador agua' },
-    { 'name': 'bomba de rellenar' },
-    { 'name': 'Válvula Relleno' },
+    { 'name': 'bomba de riego', 'tipo':'riego' },
+    { 'name': 'calentador agua', 'tipo':'riego' },
+    { 'name': 'bomba de rellenar', 'tipo':'rellena' },
+    { 'name': 'Válvula Relleno', 'tipo':'autorellena' },
   ]);
   const [sensores, setSensores] = useState([]);
   const [extraInfo, setExtraInfo] = useState([
@@ -61,12 +61,24 @@ const NuevaPantalla = () => {
           setHayConfig(false);
           setHayLuz(true);
         } else {
+          console.log("el repsonse mono:")
+          console.log(response.data)
+          console.log("aparatos:")
+          console.log(aparatos)
           response.data.forEach(element => {
             if (element.info.space === espacioName) {
               console.log('bidones AQIII brooo');
               console.log(element.info);
               setInfoBidones(prevInfoBidones => [...prevInfoBidones, element.info]);
-              setInfoBidonesActualizado(true);
+              setAparatos((prevAparatos) =>
+                prevAparatos.map((cada_aparato) => {
+                  // Comparar si el tipo del aparato coincide con el tipo del response
+                  if (cada_aparato.tipo === element.info.tipo) {
+                    return { ...cada_aparato, status: true }; // Coincidencia
+                  }
+                  return { ...cada_aparato, status: cada_aparato.status ?? false }; // Sin coincidencia, mantener estado o false
+                })
+              );
             }
           });
         }
@@ -301,9 +313,10 @@ const NuevaPantalla = () => {
     setDist1L('');
     setDistVacio('');
     info_aparatos();
+    setInfoBidones([])
   }, []);
 
-  const todosConfigurados = aparatos.every(ap => ap.existe) && sensores.every(sen => sen.existe);
+  const todosConfigurados = aparatos.every(ap => ap.existe) && sensores.every(sen => sen.existe) && infoBidones.length == aparatos.length;
 
   return (
     <View style={styles.container}>
@@ -321,6 +334,28 @@ const NuevaPantalla = () => {
                 <View>
                   <View style={styles.cont_text_info}>
                     <Text style={styles.texto}>Config edit distancias bidones sensores, tiempo relleno bomba y tiempo relleno grifo</Text>
+                    {infoBidones.map((cada_bidon) => (
+                      <View>
+                        <Text style={{fontSize:18,fontWeight:"bold"}}>{cada_bidon.tipo}</Text>
+                        <Text>Distancia (cm) bidon vacio:</Text>
+                        <TextInput
+                              key={cada_bidon.tipo+"2"}
+                              style={styles.modalInput}
+                              value={cada_bidon.distVacio}
+                              //keyboardType='numeric'
+                              //onChangeText={(text) => setLitroHora(text)}
+                        />
+                        <Text>Distancia (cm) con 1 Litro de agua:</Text>
+                        <TextInput
+                              key={cada_bidon.tipo+"1"}
+                              style={styles.modalInput}
+                              value={cada_bidon.dist1L}
+                              //keyboardType='numeric'
+                              //onChangeText={(text) => setLitroHora(text)}
+                        />
+                      </View>
+                    ))}
+
                   </View>
                 </View>
               ) : (
@@ -357,8 +392,8 @@ const NuevaPantalla = () => {
               <View>
                 <View>
                   {aparatos.map((ap, index) => (
-                    <Text style={[styles.texto, { color: ap.existe ? "green" : "red" }]} key={index}>
-                      {ap.name} {ap.existe ? "configurado!" : "aparato no está configurado."}
+                    <Text style={[styles.texto, { color: ap.existe && ap.status ? "green" : "red" }]} key={index}>
+                      {ap.name} {ap.existe && ap.status ? "configurado!" : "aparato no está configurado."}
                     </Text>
                   ))}
                 </View>
@@ -369,7 +404,7 @@ const NuevaPantalla = () => {
                     </Text>
                   ))}
                   <View style={{ flexWrap: 'wrap', alignContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity style={{ padding: 10, backgroundColor: 'red', borderRadius: 7 }} onPress={() => setOwnRisk(true)}>
+                    <TouchableOpacity style={{ padding: 10, backgroundColor: 'red', borderRadius: 7 }} onPress={() => {setOwnRisk(true);setHayConfig(true)}}>
                       <Text>Continuar (peligro)</Text>
                     </TouchableOpacity>
                   </View>
@@ -443,6 +478,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 4,
     marginBottom: 5,
+    width:25,
   },
   texto: {
     fontSize: 16,
