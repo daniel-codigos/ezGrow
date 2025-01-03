@@ -45,11 +45,12 @@ Debería quedar algo asi:
 <application android:name=".MainApplication" android:usesCleartextTraffic="true" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme">
 ```
 
-El archivo que contiene la direccion de la API es ips.json el espacio de "elegido".
+El archivo que contiene la direccion de la API es ips.json el espacio de "elegido" y "camara" para la direccion del script de la camara.
 ```
 {
     "ips":{
-        "elegido":"TU-IP:8000",
+        "elegido":"IP_API:PORT_API",
+        "camara": "IP_RASP_CAM:PORT",
     }
 }
 ```
