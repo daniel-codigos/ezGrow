@@ -1,0 +1,23 @@
+cuando el admin termina el primer registro de nombre, descripcion, etc...
+salta al siguiente que seria el menu/carta/dispensario
+debe crear la info en tablas de clubs, crear tabla para sus usuarios y meter a su admin, y demas...
+
+
+Java 17 hay q instalar!!
+
+
+
+color top 02151C
+
+Vale, todo esta bastante bien. Aun hay que mejorar la parte de la luz y los estados de creci y flora,
+es sencillo y lo estoy dejando para el final. En la parte de ventilacion igual, tengo un termostato bastante guay
+pero si es verdad que seria mejor con mi sensor y hacer algo en el backend para que siempre mire ooo
+en C en el arduino para que si recoge mas de X que envie a la api para encender el ventilador jeje y 
+este valor podria estar en la Db y que la registre siempre al encenderse.
+Al arduino deberia de añadirle una opcion en mqtt para reinciarse.
+En la parte del riego, en bidones tengo que meter la nueva parte, ya que tenemos auto rellenado.
+en enchufes tengop que añadir una opcion para poner una valvula de autorelleno, y al entrar en rellenar 
+bidones si ese aparato esta registrado en la sala, entonces 
+
+
+el grifo dio en 16 segundos 5 litros. en 32 segundos da 10 Litros y en 1 minuto 20 litros.
