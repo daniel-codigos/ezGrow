@@ -33,7 +33,15 @@ const NuevaPantalla = () => {
   const [primerPaso, setPrimerPaso] = useState(false);
   const [segundoPaso, setsegundoPaso] = useState(false);
   const [cargando, setCargando] = useState(true);
+  const [distVacioRiego, setDistVacioRiego] = useState('');
+  const [dist1LRiego, setDist1LRiego] = useState('');
+  const [distVacioRellena, setDistVacioRellena] = useState('');
+  const [dist1LRellena, setDist1LRellena] = useState('');
+  const [noConfig, setNoConfig] = useState([]);
+  const [configRellenos, setConfigRellenos] = useState([]);
   const [horaRiegoStr, setHoraRiegoStr] = useState('');
+  const [autorellenoLitro, setAutorellenoLitro] = useState('');
+  const [autorellenoMin, setAutorellenoMin] = useState('');
   const [ownRisk, setOwnRisk] = useState(false);
   const aparato_clave = "riego";
   const navigation = useNavigation();
@@ -123,13 +131,22 @@ const NuevaPantalla = () => {
           const updatedAparatos = aparatos.map(aparato => {
             let existe = false;
             response.data.info.forEach(element => {
+
               if (element.info.space === espacioName && quitarTildes(aparato.name.toLowerCase()) === quitarTildes(element.info.aparato.toLowerCase())) {
+                //console.log("1")
+                //console.log(element.info)
+                //console.log(espacioName)
+                //console.log("2")
+                //console.log(quitarTildes(aparato.name.toLowerCase()))
+                //console.log(quitarTildes(element.info.aparato.toLowerCase()))
+                //console.log("entroo")
                 existe = true;
               }
             });
             return { ...aparato, existe };
           });
           setAparatos(updatedAparatos);
+          console.log('updatedddd')
           console.log(updatedAparatos)
           setCargando(false)
           info_bidones()
@@ -180,10 +197,10 @@ const NuevaPantalla = () => {
   };
 
   
-  const set_bidones = async () => {
+  const set_bidones = async (tipo) => {
     try {
       const token = await SecureStore.getItemAsync("token_ez");
-      const fin = { 'space': espacioName, "distVacio": distVacio, "dist1L": dist1L, "nameSen": sensores[0]?.sen, "tipo": "riego" };
+      const fin = { 'space': espacioName, "distVacio": distVacio, "dist1L": dist1L, "nameSen": sensores[0]?.sen, "tipo": tipo };
       const response = await axios.post(`http://${ip.ips.elegido}/api/pages/set_bidones`, { fin }, {
         headers: {
           'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
@@ -294,6 +311,48 @@ const NuevaPantalla = () => {
     }
   };
 
+  const saveConfig = async (e) => {
+    if (e === "autorellena") {
+      console.log(configRellenos)
+      let autoL = ""
+      let automin = ""
+      configRellenos.forEach(cada_relleno => {
+        if (cada_relleno.cual === "autorellena"){
+          if (cada_relleno.tipo === "litros"){
+            autoL = cada_relleno.cantidad
+          }else{
+            automin = cada_relleno.cantidad
+          }
+        }
+      });
+
+      const fin = {"space":espacioName,"litros":autoL,"minutos":automin,"tipo":e}
+      console.log(fin)
+      const token = await SecureStore.getItemAsync("token_ez");
+      //const fin = { 'space': espacioName, "distVacio": distVacio, "dist1L": dist1L, "nameSen": sensores[0]?.sen, "tipo": tipo };
+      try {
+      const response = await axios.post(`http://${ip.ips.elegido}/api/pages/set_bidones`, { fin }, {
+        headers: {
+          'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
+        }
+      });
+
+      if (response.status === 200) {
+        if (response.data['Error']) {
+          console.log("Error al configurar bidones");
+        } else {
+          console.log("Configuración de bidones exitosa");
+        }
+        setDist1L('');
+        setDistVacio('');
+      }
+    } catch (error) {
+      console.error('Error al verificar el token:', error);
+      setHayLuz(false);
+    }
+    }
+  }
+
   const handleNotification = () => {
     sendNotification('Relleno completado', '¡Listo! El bidón se ha rellenado correctamente.');
   };
@@ -311,6 +370,7 @@ const NuevaPantalla = () => {
     requestPermissions();
     setHoraRiegoStr('');
     setDist1L('');
+    setNoConfig([])
     setDistVacio('');
     info_aparatos();
     setInfoBidones([])
@@ -342,51 +402,139 @@ const NuevaPantalla = () => {
                               key={cada_bidon.tipo+"2"}
                               style={styles.modalInput}
                               value={cada_bidon.distVacio}
-                              //keyboardType='numeric'
-                              //onChangeText={(text) => setLitroHora(text)}
+                              keyboardType='numeric'
+                              onChangeText={(text) => setConfigRellenos({"cantidad":num,"tipo":"vacio","cual":cada_aparato.tipo})}
                         />
                         <Text>Distancia (cm) con 1 Litro de agua:</Text>
                         <TextInput
                               key={cada_bidon.tipo+"1"}
                               style={styles.modalInput}
                               value={cada_bidon.dist1L}
-                              //keyboardType='numeric'
-                              //onChangeText={(text) => setLitroHora(text)}
+                              keyboardType='numeric'
+                              onChangeText={(text) => setConfigRellenos({"cantidad":num,"tipo":"1l","cual":cada_aparato.tipo})}
                         />
                       </View>
                     ))}
+                    {aparatos.map((cada_aparato) => ( 
+                      cada_aparato.tipo === "autorellena" ? 
+                      <View>
+                        <Text style={{fontSize:18,fontWeight:"bold"}}>{cada_aparato.tipo}</Text>
+                        <Text>Cantidad de L / Minutos</Text>
+                        <View style={{flexDirection:'row'}}>
+                          <TextInput
+                                //key={c}
+                                style={styles.modalInput}
+                                //value={cada_bidon.dist1L}
+                                keyboardType='numeric'
+                                onChangeText={(num) => setConfigRellenos((todo) => [...todo, { cantidad: 10, tipo: "minutos", cual: "riego" }])}
+
+                          />
+                          <Text style={{marginTop:6}}>L /</Text>
+                          <TextInput
+                                //key={c}
+                                style={styles.modalInput}
+                                //value={cada_bidon.dist1L}
+                                keyboardType='numeric'
+                                onChangeText={(num) => setConfigRellenos((todo) => [...todo, { cantidad: 10, tipo: "minutos", cual: "riego" }])}
+                              
+                          />
+                          <Text style={{marginTop:6}}>Minutos</Text>
+                        </View>
+                      </View>
+
+                      :
+                      null
+                     ))}
 
                   </View>
+                  <View>
+                        <TouchableOpacity style={styles.botonsave} onPress={() => saveConfig()}>
+                          <Text style={styles.botonTexto}>Guardar</Text>
+                        </TouchableOpacity>
+                      </View>
                 </View>
               ) : (
                 <View>
+                {noConfig && (
                   <View>
-                    <Text style={styles.texto}>Configuración sensor bidones:</Text>
+                    <View>
+                      <Text style={styles.texto}>Configuración sensor bidones:</Text>
+                    </View>
+                    <View style={styles.cont_boton}>
+                      {(() => {
+                        console.log("Contenido de noConfig:", noConfig);
+              
+                        if (noConfig.includes("riego")) {
+                          // Mostrar el paso para "riego"
+                          return (
+                            <View>
+                              <Text style={styles.texto}>
+                                Con el bidón vacío de agua, coloca el sensor en la tapa y dale a listo
+                              </Text>
+                              <Text style={styles.texto}>{distVacio}</Text>
+                              <TouchableOpacity style={styles.boton} onPress={() => info_capacidad(1)}>
+                                <Text style={styles.botonTexto}>Listo!</Text>
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        } if (noConfig.includes("rellena")) {
+                          // Mostrar el paso para "rellena"
+                          return (
+                            <View>
+                              <Text style={styles.texto}>
+                                Perfecto! Ahora rellene con 1 Litro de agua el bidón y con el sensor en la tapa dele a listo.
+                              </Text>
+                              <Text style={styles.texto}>{dist1L}</Text>
+                              <TouchableOpacity style={styles.boton} onPress={() => info_capacidad(2)}>
+                                <Text style={styles.botonTexto}>Listo!</Text>
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        } if (noConfig.includes("autorellena")) {
+                          // Mostrar el paso para "autorellena"
+                          return (
+                            <View>
+                              <Text style={styles.texto}>Configuracion de AutoRelleno!</Text>
+                              <View>
+                                <Text>Cantidad de L / Minutos</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                  <TextInput
+                                    style={styles.modalInput}
+                                    keyboardType="numeric"
+                                    onChangeText={(num) =>
+                                      setConfigRellenos((prevConfigRellenos) => [
+                                        ...prevConfigRellenos.filter((item) => item.tipo !== "litros"), // Elimina configuraciones previas de "litros"
+                                        { cantidad: num, tipo: "litros", cual: "autorellena" },
+                                      ])
+                                    }
+                                  />
+                                  <Text style={{ marginTop: 6 }}>L /</Text>
+                                  <TextInput
+                                    style={styles.modalInput}
+                                    keyboardType="numeric"
+                                    onChangeText={(num) =>
+                                      setConfigRellenos((prevConfigRellenos) => [
+                                        ...prevConfigRellenos.filter((item) => item.tipo !== "minutos"), // Elimina configuraciones previas de "minutos"
+                                        { cantidad: num, tipo: "minutos", cual: "autorellena" },
+                                      ])
+                                    }
+                                  />
+                                  <Text style={{ marginTop: 6 }}>Minutos</Text>
+                                </View>
+                                <TouchableOpacity style={styles.botonsave} onPress={() => saveConfig("autorellena")}>
+                                  <Text style={styles.botonTexto}>Guardar</Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          );
+                          
+                        }
+                      })()}
+                    </View>
                   </View>
-                  <View style={styles.cont_boton}>
-                    {!primerPaso ? (
-                      <View>
-                        <Text style={styles.texto}>Con el bidón vacío de agua, coloca el sensor en la tapa y dale a listo</Text>
-                        <Text style={styles.texto}>{distVacio}</Text>
-                        <TouchableOpacity style={styles.boton} onPress={() => info_capacidad(1)}>
-                          <Text style={styles.botonTexto}>Listo!</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ) : !segundoPaso ? (
-                      <View>
-                        <Text style={styles.texto}>Perfecto! Ahora rellene con 1 Litro de agua el bidón y con el sensor en la tapa dele a listo.</Text>
-                        <Text style={styles.texto}>{dist1L}</Text>
-                        <TouchableOpacity style={styles.boton} onPress={() => info_capacidad(2)}>
-                          <Text style={styles.botonTexto}>Listo!</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ) : (
-                      <View>
-                        <Text style={styles.texto}>Sensor Configurado Correctamente!</Text>
-                      </View>
-                    )}
-                  </View>
-                </View>
+                )}
+              </View>
+              
               )
             ) : (
               <View>
@@ -403,10 +551,36 @@ const NuevaPantalla = () => {
                       {sen.name} {sen.existe ? "configurado!" : "sensor no está configurado."}
                     </Text>
                   ))}
-                  <View style={{ flexWrap: 'wrap', alignContent: 'center', alignItems: 'center' }}>
+                  <View style={{ flexWrap: 'wrap', alignContent: 'center', alignItems: 'center',flexDirection:'row' }}>
                     <TouchableOpacity style={{ padding: 10, backgroundColor: 'red', borderRadius: 7 }} onPress={() => {setOwnRisk(true);setHayConfig(true)}}>
                       <Text>Continuar (peligro)</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        marginLeft: 5,
+                        padding: 10,
+                        backgroundColor: 'green',
+                        borderRadius: 7,
+                      }}
+                      onPress={() => {
+                        setOwnRisk(true);
+
+                        aparatos.forEach((cada_aparato) => {
+                          if (!cada_aparato.status) {
+                            console.log("wasaaaaaaaaaa");
+                            console.log(cada_aparato.name);
+                            console.log(cada_aparato);
+                            console.log(cada_aparato.status);
+
+                            // Agregar `cada_aparato.tipo` al estado de `noConfig`
+                            setNoConfig((prevNoConfig) => [...prevNoConfig, cada_aparato.tipo]);
+                          }
+                        });
+                      }}
+                    >
+                      <Text>Configurar</Text>
+                    </TouchableOpacity>
+
                   </View>
                 </View>
               </View>
@@ -491,6 +665,13 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   boton: {
+    backgroundColor: '#3897f0',
+    padding: 10,
+    borderRadius: 20,
+    width: '40%',
+    alignItems: 'center',
+  },
+  botonsave: {
     backgroundColor: '#3897f0',
     padding: 10,
     borderRadius: 20,

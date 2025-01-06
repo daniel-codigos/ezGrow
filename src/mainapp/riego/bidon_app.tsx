@@ -382,6 +382,10 @@ const NuevaPantalla = () => {
             {todosConfigurados || ownRisk ? (
               hayConfig ? (
                 <View>
+                  <View style={{flexDirection:'column'}}>
+                    <Text>Rellenar riego</Text>
+                    <Text>Rellenar bidon</Text>
+                  </View>
                   <View style={styles.cont_text_info}>
                     <Text style={styles.texto}>Cantidad de agua en bidon riego: {likidoTotal} L</Text>
                   </View>
