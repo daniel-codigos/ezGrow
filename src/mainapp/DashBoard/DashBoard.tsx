@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Graficas from './Graficas'; // Importa el componente de las gráficas
 import ip from "../../ips.json";
+import { configureProps } from 'react-native-reanimated/lib/typescript/ConfigHelper';
 
 export default function SensorDashboard() {
   const route = useRoute();
@@ -35,9 +36,16 @@ export default function SensorDashboard() {
         response.data.forEach((element) => {
           if (element.info.space === espacioName) {
             if (element.info.tipo === "riego") {
+              console.log("loooooooooooooooooooocoooooooooooooooooooo")
+              console.log(element.info)
               setIrrigationTankInfo(element.info);
             } else {
-              setFillingTankInfo(element.info);
+              if (element.info.tipo !== "autorellena") {
+                console.log("loooooooooooooooooooocoooooooooooooooooooo2")
+                console.log(element.info)
+                setFillingTankInfo(element.info);
+              }
+
             }
           }
         });
@@ -77,6 +85,10 @@ export default function SensorDashboard() {
   };
 
   const calculateLiters = (distance, emptyDistance, oneLiterDistance, multiplier = 1) => {
+    console.log("estoy hasta los cojones")
+    console.log(distance)
+    console.log(emptyDistance)
+    console.log(oneLiterDistance)
     const currentSpace = emptyDistance - distance;
     const literSpace = emptyDistance - oneLiterDistance;
     return (currentSpace / literSpace) * multiplier;

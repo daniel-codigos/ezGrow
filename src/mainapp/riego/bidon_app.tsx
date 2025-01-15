@@ -20,10 +20,12 @@ const NuevaPantalla = () => {
     { 'name': 'pausado? rapido?' },
   ]);
   const [numLitros, setNumLitros] = useState('');
+  const [numLitrosAuto, setNumLitrosAuto] = useState('')
   const [likidoTotal, setLikidoTotal] = useState('');
   const [likidoTotalRelleno, setLikidoTotalRelleno] = useState('');
   const [distVacio, setDistVacio] = useState('');
   const [dist1L, setDist1L] = useState('');
+  const [menu, setMenu] = useState('riego');
   const [hayConfig, setHayConfig] = useState(null);
   const [senCapRiego, setSenCapriego] = useState([]);
   const [senCapRellena, setSenCapRellena] = useState([]);
@@ -146,6 +148,33 @@ const NuevaPantalla = () => {
               }
             }
           });
+        }
+      }
+    } catch (error) {
+      console.error('Error al verificar el token:', error);
+      setHayLuz(false);
+    }
+  };
+
+  const autorellenar = async () => {
+    try {
+      if (numLitros !== "0") {
+        setCargando(true);
+        navigation.goBack();
+        const token = await SecureStore.getItemAsync("token_ez");
+        const fin = { 'space': espacioName, 'cantidadRellenar': numLitrosAuto };
+        const response = await axios.post(`http://${ip.ips.elegido}/api/pages/autorellenar_bidon`, { fin }, {
+          headers: {
+            'Authorization': `Bearer ${String(JSON.parse(token).access)}`,
+          }
+        });
+
+        if (response.status === 200) {
+          if (response.data['Error']) {
+            setHayConfig(false);
+          } else {
+            sendNotification('Relleno completado', '¡Listo! El bidón se ha rellenado correctamente.');
+          }
         }
       }
     } catch (error) {
@@ -382,31 +411,77 @@ const NuevaPantalla = () => {
             {todosConfigurados || ownRisk ? (
               hayConfig ? (
                 <View>
-                  <View style={{flexDirection:'column'}}>
-                    <Text>Rellenar riego</Text>
-                    <Text>Rellenar bidon</Text>
+                  <View style={{flexDirection:'row',justifyContent:"space-around",marginBottom:15}}>
+                    <View style={{marginLeft:5,borderBottomWidth:2}}>
+                      <TouchableOpacity onPress={() => setMenu("riego")}>
+                        <Text style={{marginLeft:5}}>Rellenar riego</Text>
+                      </TouchableOpacity>
+                      
+                    </View>
+                    <View style={{marginLeft:5,borderBottomWidth:2}}>
+                      <TouchableOpacity onPress={() => setMenu("autorelleno")}>
+                        <Text style={{marginLeft:5}}>Rellenar bidon</Text>
+                      </TouchableOpacity>
+                      
+                    </View>
                   </View>
-                  <View style={styles.cont_text_info}>
-                    <Text style={styles.texto}>Cantidad de agua en bidon riego: {likidoTotal} L</Text>
+
+                  { menu === "riego" ? 
+                  
+                  <View>
+
+                      <View style={styles.cont_text_info}>
+                        <Text style={styles.texto}>Cantidad de agua en bidon riego: {likidoTotal} L</Text>
+                      </View>
+                      <View style={styles.cont_text_info}>
+                        <Text style={styles.texto}>Cantidad de agua en bidon rellena: {likidoTotalRelleno} L</Text>
+                      </View>
+                      <View style={styles.cont_text_info}>
+                        <Text style={styles.texto}>Rellenar agua:</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          value={numLitros}
+                          keyboardType='numeric'
+                          onChangeText={(text) => setNumLitros(text)}
+                        />
+                        <Text style={styles.texto}> Litros</Text>
+                      </View>
+                      <View style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={rellenar} style={{ padding: 10, backgroundColor: 'cyan', borderRadius: 7 }}>
+                          <Text>Rellenar!!</Text>
+                        </TouchableOpacity>
+                      </View>
                   </View>
-                  <View style={styles.cont_text_info}>
-                    <Text style={styles.texto}>Cantidad de agua en bidon rellena: {likidoTotalRelleno} L</Text>
+                
+                
+                  : 
+                  
+                  <View>
+                    
+                      <View style={styles.cont_text_info}>
+                        <Text style={styles.texto}>Cantidad de agua en bidon rellena: {likidoTotalRelleno} L</Text>
+                      </View>
+                      <View style={styles.cont_text_info}>
+                        <Text style={styles.texto}>Rellenar agua:</Text>
+                        <TextInput
+                          style={styles.modalInput}
+                          value={numLitros}
+                          keyboardType='numeric'
+                          onChangeText={(text) => setNumLitrosAuto(text)}
+                        />
+                        <Text style={styles.texto}> Litros</Text>
+                      </View>
+                      <View style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity onPress={() => autorellenar()} style={{ padding: 10, backgroundColor: 'cyan', borderRadius: 7 }}>
+                          <Text>Rellenar!!</Text>
+                        </TouchableOpacity>
+                      </View>
+
                   </View>
-                  <View style={styles.cont_text_info}>
-                    <Text style={styles.texto}>Rellenar agua:</Text>
-                    <TextInput
-                      style={styles.modalInput}
-                      value={numLitros}
-                      keyboardType='numeric'
-                      onChangeText={(text) => setNumLitros(text)}
-                    />
-                    <Text style={styles.texto}> Litros</Text>
-                  </View>
-                  <View style={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity onPress={rellenar} style={{ padding: 10, backgroundColor: 'cyan', borderRadius: 7 }}>
-                      <Text>Rellenar!!</Text>
-                    </TouchableOpacity>
-                  </View>
+                
+                }
+
+
                 </View>
               ) : (
                 <View>
