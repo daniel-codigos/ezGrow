@@ -14,6 +14,18 @@ Los sensores funcionan por MQTT, en su registro previo se le envía junto a las 
 Requsitos:
  - java 17, node 17/18
 Instalación:
+
+Crear archivo ips.json dentro de src/ con la siguiente estructura:
+```
+{
+    "ips":{
+        "elegido":"IP:Puerto"
+        
+    }
+    
+}
+```
+Continuamos con la instalación.
 ```
 npm install -g yarn
 ```
