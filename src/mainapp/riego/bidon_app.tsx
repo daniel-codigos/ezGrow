@@ -465,7 +465,7 @@ const NuevaPantalla = () => {
                         <Text style={styles.texto}>Rellenar agua:</Text>
                         <TextInput
                           style={styles.modalInput}
-                          value={numLitros}
+                          value={numLitrosAuto}
                           keyboardType='numeric'
                           onChangeText={(text) => setNumLitrosAuto(text)}
                         />
