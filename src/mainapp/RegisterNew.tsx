@@ -7,12 +7,13 @@ import ip from "../ips.json";
 export default function RegisterScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [emailUser, setEmailUser] = useState('');
+  const [serialR,setSerialR] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleRegister = async () => {
-    if (!username || !password || !phoneNumber) {
+    if (!username || !password || !emailUser) {
       Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
@@ -20,18 +21,20 @@ export default function RegisterScreen() {
     setLoading(true);
 
     try {
-      const fin = {'username':username,'password':password,'numtlfn':phoneNumber}
+      const fin = {'username':username,'password':password,'email':emailUser,'serial':serialR}
       const response = await axios.post('http://' + ip['ips']['elegido'] + '/api/register', {fin});
 
       if (response.status === 200 || response.status === 201) {
         Alert.alert('Éxito', 'Registro completado con éxito.');
         navigation.navigate('Login');
       } else {
-        Alert.alert('Error', 'Error en el registro. Inténtalo de nuevo.');
+        console.log(response.data)
+        console.log(response)
+        Alert.alert('Error', 'Error en el registro.'+error.response.data.Error);
       }
     } catch (error) {
-      console.error('Error en el registro:', error);
-      Alert.alert('Error', 'Error en el registro. Inténtalo de nuevo.');
+      console.log(error.response.data.Error)
+      Alert.alert('Error', 'Error en el registro. '+error.response.data.Error);
     } finally {
       setLoading(false);
     }
@@ -56,10 +59,17 @@ export default function RegisterScreen() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Número de Teléfono"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
+          placeholder="Email"
+          value={emailUser}
+          onChangeText={setEmailUser}
+          //keyboardType="phone-pad"
+        />
+      <TextInput
+          style={styles.input}
+          placeholder="Serial Register"
+          value={serialR}
+          onChangeText={setSerialR}
+          //keyboardType="phone-pad"
         />
         <TouchableOpacity onPress={handleRegister} style={styles.button}>
           <Text style={styles.buttonText}>{loading ? 'Registrando...' : 'Registrar'}</Text>
